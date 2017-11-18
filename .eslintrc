@@ -1,0 +1,20 @@
+{
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "rules": {
+    "import/extensions": [
+      "error",
+      "always",
+      {
+        "js": "never",
+        "jsx": "never",
+        "mjs": "never"
+      }
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": { "extensions": [".js", ".jsx", ".mjs"] }
+    }
+  }
+}

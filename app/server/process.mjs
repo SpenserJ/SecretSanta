@@ -1,28 +1,13 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-
-const app = express();
-app.use(bodyParser.json());
-
-app.post('/process', (req, res) => {
-
-  const result = processSecretSanta(req.body);
-  console.log(req.body);
-  res.json(result);
-});
-
-app.listen(8081, () => console.log('Listening on 8081'));
-
 const getRandomIndex = max => Math.floor(Math.random() * max);
 
-const processSecretSanta = people => {
+export default (people) => {
   if (Object.keys(people).length < 3) {
     return {
       error: 'Not enough people for Secret Santa. There must be at least 3',
-    }
+    };
   }
 
-  let secretSanta;
+  let secretSanta = {};
 
   let cantFindPairTries = 0;
   let done = false;
@@ -39,7 +24,7 @@ const processSecretSanta = people => {
         .filter(v => people[giver].notFor.includes(v) === false);
       if (filteredRecipients.length === 0) {
         console.log('Couldn\'t find pairing');
-        cantFindPairTries++;
+        cantFindPairTries += 1;
         break;
       }
       const receiver = filteredRecipients[getRandomIndex(filteredRecipients.length)];

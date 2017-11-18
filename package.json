@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev:browser": "webpack-dev-server",
-    "dev:server": "nodemon app/server/index.js",
+    "dev:server": "nodemon --experimental-modules app/server/index.mjs",
+    "lint": "eslint app/**/*.*js*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Spenser Jones <hello@spenserj.com>",
@@ -13,6 +14,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.2",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -20,9 +22,15 @@
     "babel-preset-react": "^6.24.1",
     "clean-webpack-plugin": "^0.1.17",
     "css-loader": "^0.28.7",
+    "eslint": "^4.11.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.5.0",
     "html-webpack-plugin": "^2.30.1",
     "lodash.memoize": "^4.1.2",
     "nodemon": "^1.12.1",
+    "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-hot-loader": "^3.1.1",
