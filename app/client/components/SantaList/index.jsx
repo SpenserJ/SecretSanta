@@ -6,6 +6,11 @@ export default class SantaList extends React.PureComponent {
     this.state = {
       santas: {},
       newSanta: { name: '', phone: '' },
+      status: {
+        pending: false,
+        error: false,
+        result: {},
+      }
     };
   }
 
@@ -18,7 +23,7 @@ export default class SantaList extends React.PureComponent {
     this.setState({
       santas: {
         ...this.state.santas,
-        [this.state.newSanta.name]: { phone: [this.state.newSanta.phone] },
+        [this.state.newSanta.name]: { phone: this.state.newSanta.phone },
       },
       newSanta: { name: '', phone: '' },
     })
@@ -33,15 +38,31 @@ export default class SantaList extends React.PureComponent {
 
   submit = e => {
     e.preventDefault();
+    this.setState({ status: {
+      pending: true,
+      error: false,
+      result: {},
+    }});
     fetch('/process', {
       method: 'POST',
-      body: this.state.santas,
-    }).then((response) => {
-      console.log('Response', response);
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(this.state.santas),
+    })
+    .then(response => response.json())
+    .then(result => {
+      this.setState({ status: {
+        pending: false,
+        error: !!result.error,
+        result,
+      }})
     })
   }
 
   render() {
+    const { status } = this.state;
     return (<div>
       <h1>Add your Santas</h1>
       <div>
@@ -73,6 +94,9 @@ export default class SantaList extends React.PureComponent {
         </li>
       ))}
       <h1>Compile the Nice List</h1>
+      {status.error
+        ? <p>{status.result.error}</p>
+        : <ul>{Object.keys(status.result).map(santa => <li>{santa} buys for {status.result[santa]}</li>)}</ul>}
       <input type="button" value="Start shopping" onClick={this.submit} />
     </div>);
   }

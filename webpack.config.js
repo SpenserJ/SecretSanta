@@ -11,6 +11,9 @@ module.exports = {
   devServer: {
     contentBase: './dist',
     hot: true,
+    proxy: {
+      '/process': 'http://localhost:8081',
+    },
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
