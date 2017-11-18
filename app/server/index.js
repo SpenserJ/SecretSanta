@@ -21,28 +21,6 @@ const processSecretSanta = people => {
       error: 'Not enough people for Secret Santa. There must be at least 3',
     }
   }
-  /*
-  const people = {
-    Mom: {
-      notFor: ['Dad'],
-    },
-    Dad: {
-      notFor: ['Mom'],
-    },
-    Kelsey: {
-      notFor: ['Chance'],
-    },
-    Chance: {
-      notFor: ['Kelsey'],
-    },
-    Spenser: {
-      notFor: ['Samantha'],
-    },
-    Samantha: {
-      notFor: ['Spenser'],
-    },
-  };
-  */
 
   let secretSanta;
 
@@ -58,7 +36,7 @@ const processSecretSanta = people => {
       console.log(`Finding recipient for ${giver}`);
       const filteredRecipients = remainingReceive
         .filter(v => v !== giver)
-        //.filter(v => people[giver].notFor.includes(v) === false);
+        .filter(v => people[giver].notFor.includes(v) === false);
       if (filteredRecipients.length === 0) {
         console.log('Couldn\'t find pairing');
         cantFindPairTries++;

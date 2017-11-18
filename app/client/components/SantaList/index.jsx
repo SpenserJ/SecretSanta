@@ -1,11 +1,38 @@
 import React from 'react';
 
+import Multiselect from '../Multiselect/';
+
 export default class SantaList extends React.PureComponent {
   constructor() {
     super();
     this.state = {
-      santas: {},
-      newSanta: { name: '', phone: '' },
+      santas: {
+        Mom: {
+          phone: '1',
+          notFor: ['Dad'],
+        },
+        Dad: {
+          phone: '1',
+          notFor: ['Mom'],
+        },
+        Kelsey: {
+          phone: '1',
+          notFor: ['Chance'],
+        },
+        Chance: {
+          phone: '1',
+          notFor: ['Kelsey'],
+        },
+        Spenser: {
+          phone: '1',
+          notFor: ['Samantha'],
+        },
+        Samantha: {
+          phone: '1',
+          notFor: ['Spenser'],
+        },
+      },
+      newSanta: { name: '', phone: '', notFor: [] },
       status: {
         pending: false,
         error: false,
@@ -14,9 +41,14 @@ export default class SantaList extends React.PureComponent {
     };
   }
 
-  updateNewSanta = (e) => this.setState({
-    newSanta: { ...this.state.newSanta, [e.target.name]: e.target.value },
-  });
+  updateNewSanta = (event, metadata) => {
+    // Handle non-standard events from react-widgets
+    const e = metadata && metadata.originalEvent || event;
+    console.log(event, e);
+    this.setState({
+      newSanta: { ...this.state.newSanta, [e.target.name]: e.target.value },
+    });
+  };
 
   addSanta = () => {
     if (!this.state.newSanta.name || !this.state.newSanta.phone) { return; }
@@ -25,7 +57,7 @@ export default class SantaList extends React.PureComponent {
         ...this.state.santas,
         [this.state.newSanta.name]: { phone: this.state.newSanta.phone },
       },
-      newSanta: { name: '', phone: '' },
+      newSanta: { name: '', phone: '', notFor: [] },
     })
   }
 
@@ -79,6 +111,12 @@ export default class SantaList extends React.PureComponent {
           name="phone"
           onChange={this.updateNewSanta}
           value={this.state.newSanta.phone}
+        />
+        <Multiselect
+          name="notFor"
+          data={Object.keys(this.state.santas)}
+          onChange={this.updateNewSanta}
+          value={this.state.newSanta.notFor}
         />
         <input
           type="button"

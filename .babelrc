@@ -1,5 +1,5 @@
 {
-  "presets": [["env", { "modules": false, "debug": true }], "react"],
+  "presets": [["env", { "modules": false }], "react"],
   "plugins": [
     "react-hot-loader/babel",
     "transform-class-properties",

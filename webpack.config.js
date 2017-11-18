@@ -37,6 +37,8 @@ module.exports = {
           loader: 'babel-loader',
         },
       },
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      { test: /\.(gif|ttf|eot|svg|woff2?)$/, use: 'url-loader?name=[name].[ext]'},
     ],
   },
   resolve: {
