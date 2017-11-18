@@ -41,21 +41,29 @@ export default class SantaList extends React.PureComponent {
     };
   }
 
-  updateNewSanta = (event, metadata) => {
-    // Handle non-standard events from react-widgets
-    const e = metadata && metadata.originalEvent || event;
-    console.log(event, e);
-    this.setState({
-      newSanta: { ...this.state.newSanta, [e.target.name]: e.target.value },
-    });
-  };
+  updateNewSanta = e => this.setState({
+    newSanta: { ...this.state.newSanta, [e.target.name]: e.target.value },
+  });
+
+  updateExistingSanta = santa => e => this.setState({
+    santas: {
+      ...this.state.santas,
+      [santa]: {
+        ...this.state.santas[santa],
+        [e.target.name]: e.target.value,
+      },
+    },
+  });
 
   addSanta = () => {
     if (!this.state.newSanta.name || !this.state.newSanta.phone) { return; }
     this.setState({
       santas: {
         ...this.state.santas,
-        [this.state.newSanta.name]: { phone: this.state.newSanta.phone },
+        [this.state.newSanta.name]: {
+          phone: this.state.newSanta.phone,
+          notFor: this.state.newSanta.notFor,
+        },
       },
       newSanta: { name: '', phone: '', notFor: [] },
     })
@@ -94,48 +102,86 @@ export default class SantaList extends React.PureComponent {
   }
 
   render() {
-    const { status } = this.state;
+    const { santas, status } = this.state;
     return (<div>
-      <h1>Add your Santas</h1>
-      <div>
-        <input
-          type="text"
-          placeholder="John Doe"
-          name="name"
-          onChange={this.updateNewSanta}
-          value={this.state.newSanta.name}
-        />
-        <input
-          type="text"
-          placeholder="403-123-1234"
-          name="phone"
-          onChange={this.updateNewSanta}
-          value={this.state.newSanta.phone}
-        />
-        <Multiselect
-          name="notFor"
-          data={Object.keys(this.state.santas)}
-          onChange={this.updateNewSanta}
-          value={this.state.newSanta.notFor}
-        />
-        <input
-          type="button"
-          onClick={this.addSanta}
-          value="Add Santa"
-          disabled={!this.state.newSanta}
-        />
-      </div>
-      {Object.keys(this.state.santas).map(santa => (
-        <li key={santa}>
-          <h2>Hello {santa}</h2>
-          <input type="button" value="Delete" onClick={this.deleteSanta(santa)} />
-        </li>
-      ))}
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Can't buy for</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.keys(santas).map(santa => (
+            <tr key={santa}>
+              <td>{santa}</td>
+              <td>{santas[santa].phone}</td>
+              <td>
+                <Multiselect
+                  name="notFor"
+                  data={Object.keys(santas).filter(v => v !== santa)}
+                  onChange={this.updateExistingSanta}
+                  value={santas[santa].notFor}
+                />
+              </td>
+              <td>
+                <input type="button" value="Delete" onClick={this.deleteSanta(santa)} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>
+              <input
+                type="text"
+                placeholder="John Doe"
+                name="name"
+                onChange={this.updateNewSanta}
+                value={this.state.newSanta.name}
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                placeholder="403-123-1234"
+                name="phone"
+                onChange={this.updateNewSanta}
+                value={this.state.newSanta.phone}
+              />
+            </td>
+            <td>
+              <Multiselect
+                name="notFor"
+                data={Object.keys(this.state.santas)}
+                onChange={this.updateNewSanta}
+                value={this.state.newSanta.notFor}
+              />
+            </td>
+            <td>
+              <input
+                type="button"
+                onClick={this.addSanta}
+                value="Add Santa"
+                disabled={!this.state.newSanta}
+              />
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+
       <h1>Compile the Nice List</h1>
       {status.error
         ? <p>{status.result.error}</p>
-        : <ul>{Object.keys(status.result).map(santa => <li>{santa} buys for {status.result[santa]}</li>)}</ul>}
-      <input type="button" value="Start shopping" onClick={this.submit} />
+        : <ul>{Object.keys(status.result).map(santa => <li key={santa}>{santa} buys for {status.result[santa]}</li>)}</ul>}
+      <input
+        type="button"
+        value="Start shopping"
+        onClick={this.submit}
+        disabled={status.pending}
+      />
     </div>);
   }
 };
